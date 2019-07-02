@@ -1,0 +1,12 @@
+cat << EOF > app.py
+from flask import Flask
+app = Flask(__name__)
+
+@app.route('/')
+def index():
+   return '<h1>Hello World</h1>'
+EOF
+
+docker-machine scp app.py Char:/home/docker
+rm app.py
+docker run --name Abathur -v /home/docker:/root -p 3000:3000 -e FLASK_APP=/root/app.py python:2-slim bash -c "pip install flask && flask run -h 0.0.0.0 -p 3000"
